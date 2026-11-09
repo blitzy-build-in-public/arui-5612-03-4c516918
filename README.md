@@ -49,6 +49,8 @@ Server listening on port 3000
 
 No install step goes before either command.
 
+The server binds every network interface on the machine, not only `localhost`, so any host that can reach this machine on the chosen port can reach it; it has no authentication and is intended for local development only.
+
 ## Testing
 
 Leave the server running in one terminal and run these commands in a second one. The `-i` option makes `curl` print the response status line and headers as well as the response body.
@@ -104,7 +106,7 @@ Content-Length: 11
 Hello world
 ```
 
-The body is `Hello world`, 11 bytes, with no trailing newline. The `Date` value changes with every response.
+The body is `Hello world`, 11 bytes, with no trailing newline. The `Date` value is the current time in HTTP-date format, added by Node. It is generated for each response and resolved to whole seconds, so two responses served in the same second carry the same value, and it is not the fixed value shown above.
 
 A request to any other path, and a request to `/hello` with a method other than `GET`, returns `404 Not Found`:
 
@@ -156,7 +158,7 @@ Server listening on port 4000
 
 The server is then reachable at `http://localhost:4000/hello`.
 
-A port below `1024` is refused as a configuration error, which is how the server declines privileged ports without attempting to bind them. Any value that is not an integer in the accepted range is rejected with an actionable message and exit status `1`, and the server does not start. For example, `PORT=abc` prints:
+A port below `1024` is refused as a configuration error, which is how the server declines privileged ports without attempting to bind them. Any value that is not an integer in the accepted range is rejected with an actionable message and exit status `1`, and the server does not start — the only exception being an unset, empty or whitespace-only value, which takes the default `3000` described above. For example, `PORT=abc` prints:
 
 ```bash
 Configuration error: Invalid PORT value "abc": expected an integer between 1024 and 65535.

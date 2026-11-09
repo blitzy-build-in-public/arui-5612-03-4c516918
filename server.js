@@ -11,13 +11,18 @@ const NOT_FOUND_BODY = 'Not Found';
 
 let resolvedPort = null;
 let server = null;
+let shuttingDown = false;
 
 function resolvePort(rawValue) {
-  if (rawValue === undefined || rawValue.trim() === '') {
+  if (rawValue === undefined) {
     return DEFAULT_PORT;
   }
 
   const trimmedValue = rawValue.trim();
+
+  if (trimmedValue === '') {
+    return DEFAULT_PORT;
+  }
 
   if (/^\d+$/.test(trimmedValue)) {
     const candidatePort = Number(trimmedValue);
@@ -77,6 +82,12 @@ function handleServerError(err, port) {
 }
 
 function handleSigint() {
+  if (shuttingDown) {
+    return;
+  }
+
+  shuttingDown = true;
+
   console.log('Received SIGINT, shutting down server');
 
   server.close(function onClosed(err) {
@@ -91,9 +102,13 @@ function handleSigint() {
     process.exitCode = 0;
   });
 
-  // The method arrived in Node.js 18.2.0, above the declared 18.0.0 floor, so it is checked before it is called.
+  // Both methods arrived in Node.js 18.2.0, above the declared 18.0.0 floor, so each is checked before it is called.
   if (typeof server.closeIdleConnections === 'function') {
     server.closeIdleConnections();
+  }
+
+  if (typeof server.closeAllConnections === 'function') {
+    server.closeAllConnections();
   }
 }
 
