@@ -79,6 +79,14 @@ curl -i -X POST http://localhost:3000/hello
 
 The response is again `404 Not Found` with the body `Not Found`. The route matches the method `GET` and the pathname `/hello` together, so a request with a different method does not match it and falls through to the same fallback that answers an unknown path.
 
+Request the defined route with a query string:
+
+```bash
+curl http://localhost:3000/hello?name=world
+```
+
+The response is `200 OK` and the body is `Hello world`. The query string is not part of the pathname the route matches, so it does not defeat the match.
+
 ## Expected output
 
 The server confirms the bind with `Server listening on port 3000`, and it writes one line per request. The line is the ISO-8601 timestamp, the HTTP method and the request target:
