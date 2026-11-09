@@ -102,7 +102,7 @@ function handleSigint() {
     process.exitCode = 0;
   });
 
-  // Both methods arrived in Node.js 18.2.0, above the declared 18.0.0 floor, so each is checked before it is called.
+  // Each connection sweep is checked before it is called, so a runtime older than the declared floor still shuts down cleanly.
   if (typeof server.closeIdleConnections === 'function') {
     server.closeIdleConnections();
   }

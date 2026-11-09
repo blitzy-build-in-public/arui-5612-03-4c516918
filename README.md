@@ -10,7 +10,7 @@ Reading `server.js` shows the whole request path in one file: one hand-written r
 
 ## Prerequisites
 
-Node.js v18.0.0 or later. Check the version you have installed:
+Node.js v22.12.0 or later. Check the version you have installed:
 
 ```bash
 node --version
