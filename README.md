@@ -163,3 +163,11 @@ A port below `1024` is refused as a configuration error, which is how the server
 ```bash
 Configuration error: Invalid PORT value "abc": expected an integer between 1024 and 65535.
 ```
+
+The port can also be unavailable because another process is already listening on it. Starting the server a second time while the first copy still holds the default port `3000` fails the bind, and the second start prints:
+
+```bash
+Failed to start server: port 3000 is already in use. Stop the process using it, or choose another port, for example: PORT=3001 npm start
+```
+
+The line names the port that could not be bound. It is written to stderr, the process exits with status `1`, nothing is bound and no stack trace is printed; the next step is the one the message gives — stop the process using the port, or start on another one, for example `PORT=3001 npm start`.
